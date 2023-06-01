@@ -1,0 +1,10 @@
+.{
+    .name = "zig-pm-example-lib",
+    .version = "0.0.0",
+    .dependencies = .{
+        .@"zig-pm-example-lib-dep" = .{
+            .url = "https://github.com/InKryption/zig-pm-example-lib-dep/archive/main.tar.gz",
+            // your task, my InK :)
+        },
+    },
+}
