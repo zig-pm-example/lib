@@ -6,6 +6,9 @@ pub fn build(b: *Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
+    // defines a new dependency, that we declared in out `build.zig.zon`
+    const dep = b.dependency("zig-pm-example-lib-dep", .{});
+
     // makes the available a module 'foo' to consumer packages
     // with 'src/foo.zig' as the root source file of said module.
     // also returns a reference to the module for if another module
@@ -41,17 +44,31 @@ pub fn build(b: *Build) void {
         .optimize = optimize,
     });
 
+    const dep_tests = b.addTest(.{
+        .root_source_file = Build.FileSource.relative("src/use-dep.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
     // although we exposed the foo module as "foo" to consumer packages,
     // both the consumer packages and us are free to make the module
     // importable under whatever name we'd like.
     // this makes the foo module available to the "foo_tests" test executable
     // as "foo-lib".
     foo_tests.addModule("foo-lib", foo_mod);
+
+    // same as before, just with a slightly more simplified config
+    dep_tests.addModule("example-dependency", dep.module("zig-pm-example-lib-dep"));
+
     // don't forget to link the definition for foo.sub,
     // which is defined in the baz static library artifact.
     foo_tests.linkLibrary(baz);
 
     const run_foo_tests = b.addRunArtifact(foo_tests);
+    const run_dep_tests = b.addRunArtifact(dep_tests);
+
     const test_step = b.step("test", "Run library tests");
+
     test_step.dependOn(&run_foo_tests.step);
+    test_step.dependOn(&run_dep_tests.step);
 }
