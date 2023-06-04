@@ -4,7 +4,7 @@
     .dependencies = .{
         .@"zig-pm-example-lib-dep" = .{
             .url = "https://github.com/InKryption/zig-pm-example-lib-dep/archive/main.tar.gz",
-            // your task, my InK :)
+            .hash = "12205ba9dda8547f6ca2822826044256e3eee954d568955c9f2868484f09fa24a56c",
         },
     },
 }
